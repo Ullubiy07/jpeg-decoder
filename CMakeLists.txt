@@ -8,16 +8,22 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}")
 
 find_package(Qt6 REQUIRED COMPONENTS Widgets)
+qt_standard_project_setup()
+
 find_path(FFTW_INCLUDE_DIR NAMES fftw3.h REQUIRED)
 find_library(FFTW_LIBRARY NAMES fftw3 REQUIRED)
 
-file(GLOB_RECURSE SOLUTION_SRC CONFIGURE_DEPENDS "src/decoder/*.cpp")
-add_library(decoder ${SOLUTION_SRC})
+file(GLOB_RECURSE DECODER_SRC CONFIGURE_DEPENDS "src/decoder/*.cpp")
+add_library(decoder ${DECODER_SRC})
 target_include_directories(decoder PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/src")
 target_include_directories(decoder PRIVATE "${FFTW_INCLUDE_DIR}")
 target_link_libraries(decoder PRIVATE "${FFTW_LIBRARY}")
 
-add_executable(jpeg-decoder src/main.cpp)
+file(GLOB_RECURSE UI_SRC CONFIGURE_DEPENDS "src/ui/*.cpp" "src/ui/*.h")
+qt_add_executable(jpeg-decoder
+    src/main.cpp
+    ${UI_SRC}
+)
 target_link_libraries(jpeg-decoder PRIVATE decoder Qt6::Widgets)
 
 add_subdirectory(test)
