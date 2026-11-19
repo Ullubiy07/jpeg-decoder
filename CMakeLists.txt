@@ -26,4 +26,7 @@ qt_add_executable(jpeg-decoder
 )
 target_link_libraries(jpeg-decoder PRIVATE decoder Qt6::Widgets)
 
-add_subdirectory(test)
+option(BUILD_TESTING "Build tests" OFF)
+if(BUILD_TESTING)
+    add_subdirectory(test)
+endif()
